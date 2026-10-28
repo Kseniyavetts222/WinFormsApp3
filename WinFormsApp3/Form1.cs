@@ -41,9 +41,15 @@ namespace WinFormsApp3
 
         private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            openFileDialog1.ShowDialog();
-            program = openFileDialog1.FileName;
-            richTextBox1.Text = File.ReadAllText(program);
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                using (StreamReader reader = new StreamReader(openFileDialog1.FileName))
+                {
+                    string text = reader.ReadToEnd();
+                    richTextBox1.Rtf = text;
+                }
+            }
 
         }
 
@@ -54,15 +60,38 @@ namespace WinFormsApp3
 
         private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            saveFileDialog1.ShowDialog();
-      
+            saveFileDialog2.Filter = "Файлы RTF (*.rtf)|*.rtf|Все файлы (*.*)|*.*";
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                program = saveFileDialog1.FileName;
+            string text = richTextBox1.Text;
+            StreamWriter writer = new StreamWriter(program);
+            writer.Write(text);
+            writer.Close();
+
         }
 
         private void сохранитьКакToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            saveFileDialog2.ShowDialog();
-            program = saveFileDialog1.FileName;
-            File.WriteAllText(program, richTextBox1.Text);
+            SaveFileDialog saveFileDialog2 = new SaveFileDialog();
+            if (saveFileDialog2.ShowDialog() == DialogResult.OK)
+            {
+                using (StreamWriter writer = new StreamWriter(saveFileDialog2.FileName)) 
+                {
+                    writer.Write(richTextBox1.Rtf);
+                }
+            }
+        }
+
+        private void шрифтToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (fontDialog1.ShowDialog() == DialogResult.OK)
+                richTextBox1.Font = fontDialog1.Font;
+        }
+
+        private void цветToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (colorDialog1.ShowDialog() == DialogResult.OK)
+                richTextBox1.SelectionColor = colorDialog1.Color;
         }
     }
-}
+} 
